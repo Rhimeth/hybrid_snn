@@ -10,7 +10,7 @@ def preprocess_single_sample(hdf5_path, output_bin_path, sample_idx=0, time_step
     print(f"Extracting sample {sample_idx} from {hdf5_path}...")
     
     with h5py.File(hdf5_path, 'r') as f:
-        # Extract spike times and corresponding neuron IDs for the chosen sample
+        # Extract spike times and neuron IDs for the sample
         times = f['spikes']['times'][sample_idx]
         units = f['spikes']['units'][sample_idx]
     
@@ -24,11 +24,9 @@ def preprocess_single_sample(hdf5_path, output_bin_path, sample_idx=0, time_step
         if tick_idx < total_ticks and 0 <= u < num_channels:
             dense_matrix[tick_idx, u] = True
             
-    # Bit-pack the 700 booleans into bytes along the channel axis (700 bits -> 88 bytes)
-    # np.packbits pads the remaining 4 bits with zeros automatically
+    # 700 booleans to bytes (700 bits -> 88 bytes)
     packed_data = np.packbits(dense_matrix, axis=-1)
     
-    # Ensure the output directory exists
     os.makedirs(os.path.dirname(output_bin_path), exist_ok=True)
     
     with open(output_bin_path, 'wb') as out_file:
@@ -37,7 +35,6 @@ def preprocess_single_sample(hdf5_path, output_bin_path, sample_idx=0, time_step
     print(f"Successfully generated bit-packed binary: {output_bin_path} ({packed_data.nbytes} bytes)")
 
 if __name__ == "__main__":
-    # Change 'shd_train.h5' to whatever your local filename is
     raw_dataset = "data/shd_train.h5" 
     output_binary = "data/shd_binned_input.bin"
     
