@@ -13,7 +13,6 @@ public:
     static constexpr int16_t MAX_VAL = 32767;
     static constexpr int16_t MIN_VAL = -32768;
 
-    // --- Translation Utilities (For Initialization & Debugging ONLY) ---
     static q8_8_t from_float(float val) {
         return static_cast<q8_8_t>(std::clamp(val * 256.0f, static_cast<float>(MIN_VAL), static_cast<float>(MAX_VAL)));
     }
@@ -22,7 +21,7 @@ public:
         return static_cast<float>(val) / 256.0f;
     }
 
-    // --- Hardware Operations ---
+    // Hardware Operations
     
     // Addition with Saturation
     static q8_8_t add(q8_8_t a, q8_8_t b) {
@@ -44,7 +43,7 @@ public:
     }
 
 private:
-    // Helper to clip values to 16-bit boundaries
+    // Clip values to 16-bit boundaries
     static q8_8_t saturate(int32_t val) {
         return static_cast<q8_8_t>(std::clamp(val, static_cast<int32_t>(MIN_VAL), static_cast<int32_t>(MAX_VAL)));
     }
