@@ -29,7 +29,7 @@ public:
     void logTick(int tick, float analog_in, int raw_weight, int motor, int error, int raw_vm) {
         if (!file.is_open()) return;
 
-        // Convert Q8.8 fixed-point to float (divide by 256.0)
+        // Convert Q8.8 fixed-point to float
         float float_weight = static_cast<float>(raw_weight) / 256.0f;
         float float_vm     = static_cast<float>(raw_vm) / 256.0f;
 
