@@ -25,7 +25,7 @@ public:
 
     // Trace Update per cycle
     void update_trace(bool pre_spiked, q8_8_t post_surrogate_grad) {
-        // Decay historical trace: e_trace = e_trace * decay_trace
+        // e_trace = e_trace * decay_trace
         q8_8_t decayed_trace = Q8_8::mul(e_trace, decay_trace);
 
         // If a pre-synaptic spikes, calculate innovation
