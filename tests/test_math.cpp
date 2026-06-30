@@ -3,7 +3,6 @@
 #include <cmath>
 #include "q8_8_math.h"
 
-// Helper for comparing floats with a tiny tolerance due to quantization
 bool float_equals(float a, float b, float epsilon = 0.01f) {
     return std::abs(a - b) < epsilon;
 }
@@ -35,11 +34,9 @@ void test_negative_multiplication() {
 }
 
 void test_saturation_overflow() {
-    // Max positive Q8.8 value is roughly 127.99
     q8_8_t max_val = Q8_8::from_float(127.0f);
     q8_8_t multiplier = Q8_8::from_float(2.0f);
     
-    // 127 * 2 = 254 (This exceeds Q8.8 limits, must clamp to 127.99)
     q8_8_t result = Q8_8::mul(max_val, multiplier);
     
     assert(result == Q8_8::MAX_VAL); 
@@ -50,7 +47,6 @@ void test_saturation_underflow() {
     q8_8_t min_val = Q8_8::from_float(-127.0f);
     q8_8_t multiplier = Q8_8::from_float(2.0f);
     
-    // -127 * 2 = -254 (Must clamp to minimum bound)
     q8_8_t result = Q8_8::mul(min_val, multiplier);
     
     assert(result == Q8_8::MIN_VAL);
