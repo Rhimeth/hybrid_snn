@@ -14,7 +14,7 @@ private:
     q8_8_t learning_rate;    // Learning rate
 
 public:
-    // Initializes synapse states and configurations
+    // Init synapse states and configurations
     EProp_Synapse(float initial_w, float trace_decay, float lr) {
         weight = Q8_8::from_float(initial_w);
         e_trace = 0;
@@ -28,29 +28,26 @@ public:
         // Decay historical trace: e_trace = e_trace * decay_trace
         q8_8_t decayed_trace = Q8_8::mul(e_trace, decay_trace);
 
-        // If a pre-synaptic spike occurred, calculate innovation
+        // If a pre-synaptic spikes, calculate innovation
         if (pre_spiked) {
-            // Innovation = 1.0 * post_surrogate_grad
             e_trace = Q8_8::add(decayed_trace, post_surrogate_grad);
         } else {
             e_trace = decayed_trace;
         }
     }
 
-    // Weight Adaptation (Evaluated after Global Feedback arrives)
-    // Modifies connection strength using local memory + global error
+    // Weight Adaptation
     void apply_learning_signal(q8_8_t global_learning_signal) {
-        // Compute raw gradient: grad = global_learning_signal * e_trace
+        // Gradient: grad = global_learning_signal * e_trace
         q8_8_t raw_gradient = Q8_8::mul(global_learning_signal, e_trace);
 
-        // Scale by learning rate: delta_w = raw_gradient * learning_rate
+        // delta_w = raw_gradient * learning_rate
         q8_8_t delta_w = Q8_8::mul(raw_gradient, learning_rate);
 
         // Update weight memory: weight = weight + delta_w
         weight = Q8_8::add(weight, delta_w);
     }
 
-    // Getters for Unit Testing & Simulation Verification
     float get_weight_float() const { return Q8_8::to_float(weight); }
     float get_trace_float() const { return Q8_8::to_float(e_trace); }
     q8_8_t get_raw_weight() const { return weight; }
