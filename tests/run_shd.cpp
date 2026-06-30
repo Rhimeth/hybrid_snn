@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <cstring> // For std::memset
+#include <cstring>
 #include "../src/data_pipeline.h"
 #include "../src/snn_network.h"
 #include "../src/telemetry_logger.h"
@@ -11,7 +11,7 @@ constexpr int NUM_HIDDEN = 256;
 constexpr int NUM_OUT = 20;
 
 int main() {
-    // 1. Initialize Hardware Cores
+    // Initialize Hardware Cores
     SNN_Crossbar<NUM_IN, NUM_HIDDEN> hidden_layer(0.9f, 0.9f, 1.0f, 0.1f, 0.05f, 0.95f, 0.01f);
     SNN_Crossbar<NUM_HIDDEN, NUM_OUT> output_layer(0.9f, 0.9f, 1.0f, 0.1f, 0.05f, 0.95f, 0.01f);
 
@@ -23,7 +23,6 @@ int main() {
         }
     }
 
-    // 2. Open the binary file
     std::ifstream bin_file("data/shd_binned_input.bin", std::ios::binary);
     if (!bin_file) {
         std::cerr << "Error: Cannot open SHD binary data!" << std::endl;
@@ -85,7 +84,6 @@ int main() {
             }
         }
 
-        // Quick readout per epoch
         int predicted_digit = 0;
         int max_spikes = output_spike_counts[0];
         for (int i = 0; i < NUM_OUT; ++i) {
@@ -95,17 +93,15 @@ int main() {
             }
         }
 
-        // Print progress tracking
         std::cout << "Epoch " << epoch 
                   << " | Pred: " << predicted_digit 
                   << " | Target Spikes (" << target_digit << "): " << output_spike_counts[target_digit] 
                   << " | Noise Spikes (Class 0): " << output_spike_counts[0] 
                   << (predicted_digit == target_digit ? "  [MATCH]" : "") << std::endl;
-    } // End of Epoch loop
+    }
 
     bin_file.close();
 
-    // --- READOUT PHASE: Find the Winner of the Final Epoch ---
     int predicted_digit = 0;
     int max_spikes = output_spike_counts[0];
 
