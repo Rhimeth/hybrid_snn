@@ -3,8 +3,7 @@
 #include "../src/data_pipeline.h"
 
 void test_delta_modulation() {
-    // Init encoder for robot joint angle
-    // Angle, Threshold
+    // Init encoder
     DeltaEncoder joint_sensor(0.0f, 0.1f);
 
     // Simulated telemetry from moving joint
